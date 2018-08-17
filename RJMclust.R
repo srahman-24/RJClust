@@ -13,8 +13,8 @@ gg_wodiag       = gg - diag(diag(gg))
 gg_wdiag        = cbind(gg_wodiag, diag(gg))
 GG_new          = cbind(gg_wodiag + diag(colSums(gg_wodiag)/(n-1)), diag(gg))
 
-############ Applying the Hierachical and EM Algorithm Raftery's Package #############
-MclustGG = Mclust(GG_new, modelNames = "VVI")  # On GG 
+
+MclustGG = Mclust(GG_new, modelNames = "VVI")  
 groupG   = MclustGG$class
 
 
