@@ -19,12 +19,18 @@ Source2:  Dyrskot et al 2003, Nature Genetics. This is the original paper when t
 The following Rcode should be copy pasted in the main.R file along with the data to get the original labels denoted by "group"
 
 group1         = c(1:nrow(D));
-group1         = c(1:nrow(D));
+
+
 group1[c(1,2,5,6,8,9,11,22,34)] = 1; #T2+
+
 group1[c(3,4,7,10,12,13,14,16,17,18,19,23,26:33)] = 2; #Ta
+
 group1[c(15,20,21,24,25,35:40)] = 3; #T1
+
 group2 = group1;
+
 group2[c(3,13,14,30)] = 4; #Ta2
+
 group2[c(4,7,12,16,18,19,23,31,33)]= 5; #Ta3
 
 group = group1; 
