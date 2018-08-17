@@ -28,7 +28,7 @@ RJM$ami
 RJM$n.clust
 table(group, RJM$groupG)
 
-RJ = RJclust(Z)
+RJ = RJclust(Z, C_max)
 RJ$ami 
 RJ$n.clust 
 table(group, RJM$groupG)
