@@ -1,5 +1,6 @@
 # RJClust
 Maintained by: Shahina Rahman.
+
 Authors of the main manuscript: Shahina Rahman and Valen E. Johnson
 
 To use the RJ clustering, the follwing simple steps are needed. 
