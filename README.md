@@ -1,7 +1,15 @@
 # RJClust
-Authors: Shahina Rahman and Valen E. Johnson. 
+Maintained by: Shahina Rahman and Valen E. Johnson. 
 
-The validated labels has two source. 
+To use the RJ clustering, the follwing simple steps are needed. 
+
+1. All the .R files and .csv file should be downloaded in the same folder RJ. 
+2. Set the current folder as the working directory.  Example: setwd("~/Documents/Clustering/RJ")
+3. Run the main_RJ.R file. 
+
+
+
+The validated labels of the Dataset Dyrskot has two source. 
 Source1:  De Souto et al 2008, BMC Bioinformatics. Authors maintains the repository of all the 32 datasets used in this article. The label is obtained from their processed and filtered dataset "dyrskjot-2003_database.csv". We call it group1.
 
 Source2:  Dyrskot et al 2003, Nature Genetics. This is the original paper when the data was first published and the data respository is available in ? . Along with T2 and T1 Bladder Carcinoma tumors, authors have categorized T2+ tumor cells into three further groups, T2+, T2-grade2 and T2-grade3. We denote the labels obtained directly from Page ? of original article by group2. 
