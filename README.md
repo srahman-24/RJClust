@@ -14,7 +14,7 @@ To use the RJ clustering, the follwing simple steps are needed.
 The validated labels of the Dataset Dyrskot has two source. 
 Source1:  De Souto et al 2008, BMC Bioinformatics. Authors maintains the repository of all the 32 datasets used in this article. The label is obtained from their processed and filtered dataset "dyrskjot-2003_database.csv". We call it group1.
 
-Source2:  Dyrskot et al 2003, Nature Genetics. This is the original paper when the data was first published and the data respository is available in ? . Along with T2 and T1 Bladder Carcinoma tumors, authors have categorized T2+ tumor cells into three further groups, T2+, T2-grade2 and T2-grade3. We denote the labels obtained directly from Page ? of original article by group2. 
+Source2:  Dyrskot et al 2003, Nature Genetics. This is the original paper when the data was first published and the data respository is available in https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE089 . Along with T2 and T1 Bladder Carcinoma tumors, authors have categorized T2+ tumor cells into three further groups, T2+, T2-grade2 and T2-grade3. We denote the labels obtained directly from Table of Dyrskot et al 2003, Nature Genetics. We donte it by group 2.
 
 The following Rcode should be copy pasted in the main.R file along with the data to get the original labels denoted by "group"
 
