@@ -17,7 +17,7 @@ Source1:  De Souto et al. 2008, BMC Bioinformatics. Authors maintain the reposit
 
 Source2:  Dyrskot et al. 2003, Nature Genetics. This is the paper when the data was first published and the data respository is available in https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE089 . Along with T2+ and T1 Bladder Carcinoma tumors, authors have categorized Ta tumor cells into three further groups, Ta-grade2, Ta-grade3 and Ta-grade3-CIS. We denote the labels (obtained directly from Table 3 of Dyrskot et al. 2003, Nature Genetics) as group2.
 
-The following Rcode should be pasted in the main_RJ.R file along with the data to get the original labels denoted by "group"
+The following Rcode should be pasted in the main_RJ.R file along with the data to get the original labels denoted by "group": 
 
 
 
