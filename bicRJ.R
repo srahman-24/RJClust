@@ -91,7 +91,7 @@ bic.G = function(C,y, mu, Sigma, N, prob, iter.max,...)
   Sigma = emstep(y, C, mu, Sigma, prob, iter.max, N)$Sigma
   z     = emstep(y, C, mu, Sigma, prob, iter.max, N)$z
   if(any(colSums(z)<=1)) return(-1e6)
-  return(list(bic.value = 2 * loglik.G(y, z, mu, Sigma,C) - (nparams.G(C,ncol(GG)) * log(N)), z = z, Sigma = Sigma, mu = mu))
+  return(list(bic.value = 2 * loglik.G(y, z, mu, Sigma,C) - (nparams.G(C,d) * log(N)), z = z, Sigma = Sigma, mu = mu))
   
 }
 
