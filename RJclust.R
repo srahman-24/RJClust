@@ -1,4 +1,4 @@
-RJclust = function(Z1, C_max, group){
+RJclust = function(Z1, C_max, group, iter.max){
 
 source("bicRJ.R")
 source("AMI.R")  
@@ -10,7 +10,7 @@ source("AMI.R")
   gg_wdiag    = cbind(gg_wodiag, diag(gg))
   GG_new      = cbind(gg_wodiag + diag(colSums(gg_wodiag)/(n-1)), diag(gg))
 
-  bic_eval = NULL ; Lat  = Sigma = mu = list(); iter.max =  100  
+  bic_eval = NULL ; Lat  = Sigma = mu = list(); 
   d = n+1;  N  =  n
   
   for(C in 1:C_max)
