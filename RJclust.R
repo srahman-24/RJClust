@@ -13,7 +13,7 @@ source("AMI.R")
   bic_eval = NULL ; Lat  = Sigma = mu = list(); 
   d = n+1;  N  =  n
   
-  for(C in 1:C_max)
+  for(C in 1:C.max)
   { 
     
     init                =  Mclust(GG_new, modelNames = "VVI", G = C)
