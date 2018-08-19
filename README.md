@@ -11,7 +11,7 @@ To use the RJ clustering, the following steps are needed.
 
 
 
-The validated labels of the Dataset Dyrskot has two sources. 
+The validated labels of the dataset "Dyrskjot-2003" used in main_RJ.R has two sources. 
 
 Source1:  De Souto et al. 2008, BMC Bioinformatics. Authors maintain the repository of all the 32 datasets used in this article. The label obtained from their processed and filtered dataset "Dyrskjot-2003.txt" is available in https://schlieplab.org/Static/Supplements/CompCancer/datasets.htm. We call their labels as group1.
 
