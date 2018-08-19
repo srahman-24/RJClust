@@ -9,10 +9,10 @@ library(mclust)
 source("RJMclust.R")
 source("RJclust.R")
 
-Dyrskjot      = read.csv("dyrskjot-2003_database.csv", header = T, row.names = 1)
+Dyrskjot      = read.csv("Dyrskjot-2003.csv", header = T, row.names = 1)
 D             = t(Dyrskjot)
 
-# group information of the dataset Dyrskot can be obtained from README.md file. 
+# Paste the label information Source1/Source2 of the dataset Dyrskot from README.md file here. 
 
 Z  = scale(log(D), center = T, scale =T)
 
