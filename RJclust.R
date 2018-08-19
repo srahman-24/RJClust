@@ -1,4 +1,4 @@
-RJclust = function(Z1, C_max){
+RJclust = function(Z1, C_max, group){
 
 source("bicRJ.R")
 source("AMI.R")  
@@ -38,11 +38,11 @@ source("AMI.R")
   groupG = c(1:n)
   for(kk in 1:n.clust)
   {
-    Class.member[[kk]]  = which(Class.Matrix[,kk]==1)
+    Class.member[[kk]]         = which(Class.Matrix[,kk]==1)
     groupG[Class.member[[kk]]] = kk
-    Class.mean[[kk]]    = colMeans(GG_new[Class.member[[kk]], ]) 
-    #Class.sigma[[kk]]   = var(y[Class.member[[kk]], ])
-    Class.pro[[kk]]     = length(Class.member[[kk]])/N  
+    Class.mean[[kk]]           = colMeans(GG_new[Class.member[[kk]], ]) 
+    #Class.sigma[[kk]]         = var(y[Class.member[[kk]], ])
+    Class.pro[[kk]]            = length(Class.member[[kk]])/N  
   }
   
   
