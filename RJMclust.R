@@ -1,14 +1,14 @@
 ### author: Shahina Rahman 
 
 
-RJMclust = function(Z){
+RJMclust = function(Z, group){
 
 source("AMI.R")  
-p = ncol(Z1)
-n = nrow(Z1)
+p = ncol(Z)
+n = nrow(Z)
 
-GG  = Z1%*%t(Z1)/p
-gg = GG 
+GG  = Z%*%t(Z)/p
+gg  = GG 
 gg_wodiag       = gg - diag(diag(gg))
 gg_wdiag        = cbind(gg_wodiag, diag(gg))
 GG_new          = cbind(gg_wodiag + diag(colSums(gg_wodiag)/(n-1)), diag(gg))
