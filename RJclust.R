@@ -1,4 +1,4 @@
-RJclust = function(Z1, group, C_max, iter.max){
+RJclust = function(Z1, group, C.max, iter.max){
 
 source("bicRJ.R")
 source("AMI.R")  
