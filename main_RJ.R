@@ -38,7 +38,7 @@ table(group, RJM$groupG)
 
 C.max = 6; iter.max = 100
 RJ = RJclust(Z, group, C.max, iter.max)
-plot(RJ$bic_eval)
+plot(RJ$bic_eval, xlab = "Clusters", ylab = "BIC-evaluated", main = "BIC", type = "b")
 RJ$ami 
 RJ$n.clust 
 table(group, RJ$groupG)
