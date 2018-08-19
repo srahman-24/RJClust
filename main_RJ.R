@@ -4,6 +4,7 @@
 
 rm(list = ls())
 
+#install package "mclust" and "infotheo" before running the code. 
 library(mclust)
 
 source("RJMclust.R")
