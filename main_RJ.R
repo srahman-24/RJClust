@@ -5,8 +5,7 @@
 rm(list = ls())
 
 library(mclust)
-library(devtools)
-#library(e1071)
+
 source("RJMclust.R")
 source("RJclust.R")
 
