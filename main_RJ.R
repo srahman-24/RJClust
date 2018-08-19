@@ -9,7 +9,7 @@ library(mclust)
 source("RJMclust.R")
 source("RJclust.R")
 
-Dyrskjot      = read.csv("Dyrskjot-2003.csv", header = T, row.names = 1)
+Dyrskjot      = read.csv("dyrskjot-2003_database.csv", header = T, row.names = 1)
 D             = t(Dyrskjot)
 
 # Uncomment the label information from Source1/Source2 of the dataset Dyrskjot from README.md file here. 
