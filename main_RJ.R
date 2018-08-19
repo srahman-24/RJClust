@@ -28,12 +28,12 @@ group = group2;
 
 Z  = scale(log(D), center = T, scale =T)
 
-RJM = RJMclust(Z)
+RJM = RJMclust(Z, group)
 RJM$ami
 RJM$n.clust
 table(group, RJM$groupG)
 
-RJ = RJclust(Z, C_max)
+RJ = RJclust(Z, C_max, group)
 RJ$ami 
 RJ$n.clust 
 table(group, RJM$groupG)
