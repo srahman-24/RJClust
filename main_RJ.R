@@ -34,7 +34,8 @@ RJM$ami
 RJM$n.clust
 table(group, RJM$groupG)
 
-RJ = RJclust(Z, C_max, group)
+C.max = 10; iter.max = 100
+RJ = RJclust(Z, group, C.max, iter.max)
 RJ$ami 
 RJ$n.clust 
 table(group, RJM$groupG)
