@@ -5,7 +5,7 @@ Authors of the main manuscript: Shahina Rahman and Valen E. Johnson
 
 To use the RJ clustering, the following steps are needed. 
 
-1. All the .R files and .csv file should be downloaded in the same folder RJ. 
+1. All the .R  and .cpp files and .csv file should be downloaded in the same folder RJ. 
 2. Set the current folder as the working directory.  Example: setwd("~/Documents/Clustering/RJ")
 3. Install 2 external packages "mclust" and "infotheo" by the commands: 
            
