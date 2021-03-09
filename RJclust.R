@@ -1,5 +1,6 @@
 RJclust = function(Z1, group, C.max, iter.max){
 
+  # add a comment
 source("bicRJ.R")
 source("AMI.R")  
     p           =    ncol(Z1)
