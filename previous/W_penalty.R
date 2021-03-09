@@ -1,7 +1,7 @@
 library(mclust)
 library(RJcluster)
 
-# add a comment
+# New Penalty
 n     = c(10,20,50,70)         # Unequal Cluster size settings
 p     = 220                    # first 4 being informative and remaining ones are non-informative 
 C     = 4                      # initializing every individual as their own clusters 
