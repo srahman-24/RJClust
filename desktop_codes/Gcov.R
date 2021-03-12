@@ -17,7 +17,7 @@ Gcov = function(GG,C,z,N,...)
   labels    = rep(1,N) 
   for(ii in 1:C)
   {
-    gamma[[ii]]       =  which(z[,ii] == 1) 
+    gamma[[ii]]         =  which(z[,ii] == 1) 
     labels[gamma[[ii]]] =  ii
   }
   

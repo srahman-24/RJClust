@@ -14,7 +14,7 @@ weights_multi     = function(x, prob, mu, Sigma,C, ...)
     ww        = NULL 
   for(kk in 1:C)
     ww        = c(ww, prob[kk]*dmvnorm(x, mean = mu[kk,], Sigma[,,kk], log = FALSE))
-  return(ww/sum(ww))
+    return(ww/sum(ww))
 }
 
 
@@ -31,13 +31,14 @@ emstep = function(y, C, mu, Sigma, prob, iter.max, N, ...)
     {
       ## print(weights(y[ii], p, mu, sigma))
       z[ii,]    = t(rmultinom(1, 1, weights_multi(y[ii,], prob, mu, Sigma,C)))
-      #z1[ii,]= which[max(weights_multi(y[ii,], prob, mu, Sigma,C))]
+      #z1[ii,]  = which[max(weights_multi(y[ii,], prob, mu, Sigma,C))]
       class[ii] = which(z[ii,] == 1)
     }
     
     GCOV    =  Gcov(y,C,z,N)
     #print(GCOV$gamma[[2]][1])
     #GCOV           =  GcovCPP(y, C, z, N)
+    mu      =  RJ_mean(C, class, GG)
     
     ## Mstep Estimation:
     for(jj in 1:C)
@@ -52,6 +53,8 @@ emstep = function(y, C, mu, Sigma, prob, iter.max, N, ...)
         prob[jj]     = nrow(y1)/nrow(y)
       }
     }
+    
+
     
     loglik.diff     = abs(loglik_new - loglik.G(y, prob, mu, Sigma,C,N)) 
     if(loglik.diff< 1e-6) 

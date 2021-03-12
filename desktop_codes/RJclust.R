@@ -15,31 +15,30 @@ source("AMI.R")
   bic_eval1 = NULL
   d = (n+1);  N  =  n
   
-  for(rr in 1:20)
-  {
+  #for(rr in 1:20)
+  #{
   bic_eval1 = NULL 
   bic_eval1  = c(bic_eval1, Mclust(GG_new, G = 1)$bic)
-  for(C in 2:5)
+  for(C in 2:C.max)
   { 
-    mu    = array(0, dim = c(C, N+1))
-    Sigma = array(0, dim = c(N+1, N+1, C))
-    R = matrix(0, N, C)         
+    mu           =  array(0, dim = c(C, N+1))
+    Sigma        =  array(0, dim = c(N+1, N+1, C))
+    #R           =  matrix(0, N, C)         
     init         =  Mclust(GG_new, G = C)
     init         =  Mclust(GG_new, modelNames = "VVI", G = C)
     #for(ii in 1:N){ R[ii,]      =  t(rmultinom(1, 1, rep(1/C,C)))} 
     #for(jj in 1:C){ mu[jj,]     =  colMeans(GG_new[which(R[,jj]==1), ]); Sigma[, ,jj] = diag(N+1) }
-    #mu           =  t(init$parameters$mean)
-    #Sigma        =  init$parameters$variance$sigma
-    
+    mu           =  t(init$parameters$mean)
+    Sigma        =  init$parameters$variance$sigma
     prob         =  init$parameters$pr
     
-    bic.val      =  bic.G(C, GG_new, p, mu , Sigma, N, prob, iter.max)
+    bic.val      =  bic.G(C, GG_new, p, mu, Sigma, N, prob, iter.max)
     bic_eval1     = c(bic_eval1, bic.val$bic.value)
     Lat[[C]]     =  bic.val$z
   }
   
-  Bic_eval[[rr]] = bic_eval1
-  }
+  #Bic_eval[[rr]] = bic_eval1
+  #}
   
   
   plot(bic_eval,type = "l")
