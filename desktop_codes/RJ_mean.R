@@ -1,4 +1,4 @@
-RJ_mean = function(K, class, GG){
+RJ_mean = function(K, class, GG, ...){
 
 gamma     = list()
 mean.diag = rep(1,K)
