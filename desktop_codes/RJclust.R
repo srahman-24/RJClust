@@ -33,7 +33,7 @@ source("AMI.R")
     
     prob         =  init$parameters$pr
     
-    bic.val      =  bic.G(C, GG_new, mu , Sigma, N, prob, iter.max)
+    bic.val      =  bic.G(C, GG_new, p, mu , Sigma, N, prob, iter.max)
     bic_eval1     = c(bic_eval1, bic.val$bic.value)
     Lat[[C]]     =  bic.val$z
   }

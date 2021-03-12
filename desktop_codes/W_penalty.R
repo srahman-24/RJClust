@@ -2,10 +2,11 @@ library(mclust)
 library(RJcluster)
 
 # New Penalty
-n     = c(10,20,50,70)         # Unequal Cluster size settings
+n     = c(20,20,20,20)         # Unequal Cluster size settings
 p     = 220                    # first 4 being informative and remaining ones are non-informative 
 C     = 4                      # initializing every individual as their own clusters 
-sigma = 2                     # noise level 
+sigma1 = 1                     # noise level in informative variables
+sigma2 = 1                     # noise level in uninformative variables
 ## sigma = 1 ( SNR : high signal)
 ## sigma = 2 ( SNR:  low  signal) 
 group = c(rep(1,n[1]), rep(2,n[2]), rep(3,n[3]), rep(4,n[4]))
@@ -13,24 +14,24 @@ group = c(rep(1,n[1]), rep(2,n[2]), rep(3,n[3]), rep(4,n[4]))
 # Set2:  sigma = 2 ( SNR : low level) ,  and n      = c(20,20,20,20) 
 # Set1:  sigma = 1 ( SNR : high level) , and n      = c(20,20,200,200) (unbalanced)
 
-X    = matrix(rnorm(sum(n)*p,0, 1), nrow = sum(n), ncol = p, byrow = TRUE)
+X    = matrix(rnorm(sum(n)*p,0, sigma2), nrow = sum(n), ncol = p, byrow = TRUE)
 
 #Cluster 1: N(2.5, sigma)(1-10), N(1.5, sigma)(11-20) 
 
-X[1:n[1],1:10]                                       =   rnorm(n[1]*10, 2.5, sigma)
-X[1:n[1],(1+10):(10+10)]                             =   rnorm(n[1]*10, 1.5, sigma)
+X[1:n[1],1:10]                                       =   rnorm(n[1]*10, 2.5, sigma1)
+X[1:n[1],(1+10):(10+10)]                             =   rnorm(n[1]*10, 1.5, sigma1)
 
 #Cluster 2: N(0, sigma)(1-10), N(1.5, sigma) (11-20)
-X[(n[1]+1):(n[1]+n[2]),1:10]                         =   rnorm(n[2]*10, 0, sigma)
-X[(n[1]+1):(n[1]+n[2]),(1+10):(10+10)]               =   rnorm(n[2]*10, 1.5, sigma)
+X[(n[1]+1):(n[1]+n[2]),1:10]                         =   rnorm(n[2]*10, 0, sigma1)
+X[(n[1]+1):(n[1]+n[2]),(1+10):(10+10)]               =   rnorm(n[2]*10, 1.5, sigma1)
 
 #Cluster 3: N(0, sigma)(1-10), N(-1.5,sigma)(11-20)
-X[(n[1]+n[2]+1):(n[1]+n[2]+n[3]),1:10]               =   rnorm(n[3]*10, 0, sigma)
-X[(n[1]+n[2]+1):(n[1]+n[2]+n[3]),(1+10):(10+10)]     =   rnorm(n[3]*10, -1.5, sigma)
+X[(n[1]+n[2]+1):(n[1]+n[2]+n[3]),1:10]               =   rnorm(n[3]*10, 0, sigma1)
+X[(n[1]+n[2]+1):(n[1]+n[2]+n[3]),(1+10):(10+10)]     =   rnorm(n[3]*10, -1.5, sigma1)
 
 #Cluster 4: N(-2.5,sigma)(1-10), N(-1.5, sigma)(11-20)
-X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),1:10]               =   rnorm(n[4]*10, -2.5, sigma)
-X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),(1+10):(10+10)]     =   rnorm(n[4]*10, -1.5, sigma)
+X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),1:10]               =   rnorm(n[4]*10, -2.5, sigma1)
+X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),(1+10):(10+10)]     =   rnorm(n[4]*10, -1.5, sigma1)
 
 
 #Z           =  scale(X, center = T, scale = T)
@@ -51,18 +52,24 @@ plot(BIC_GG$BIC)
 
 
 Gclust      =  Mclust(GG_new, modelNames = "VVI", G = 1, verbose = F)
-M1          =  Gclust$parameters$mean  #N by 1 matrix 
+M1          =  Gclust$parameters$mean  #N by 1 matrix
+RJMean1     =  RJ_mean(1, Gclust$class, GG)
 W = W1 = NULL 
 #MM  = matrix(0, nrow = N, ncol = N+1)
-for (kk in 2:20)
+for (kk in 2:10)
 {
   Gclust      =  Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
-  Mean        =  Gclust$parameters$mean
-  W           =  c(W, kmeans(t(Mean), centers = t(M1), iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
-  M1          =  Mean
+  RJMean      =  RJ_mean(kk, Gclust$class, GG)
+  #Mean        =  Gclust$parameters$mean
+  #W           =  c(W, kmeans(t(Mean), centers = t(M1), iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
+  W1          =  c(W1, kmeans(RJMean, centers = RJMean1, iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
+  #M1          =  Mean
+  RJMean1     =  RJMean
 }
 
-plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
+#plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
+plot(W1, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
+
 #plot(W1, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
 abline(h = 100, lwd = 2, col = "red")
 abline(h = 1, lwd = 2, col = "brown")

@@ -26,16 +26,18 @@ emstep = function(y, C, mu, Sigma, prob, iter.max, N, ...)
   for(ss in 1:iter.max)
   {
     #Estep:
+    class = rep(0,N)
     for(ii in 1:N)
     {
       ## print(weights(y[ii], p, mu, sigma))
-      z[ii,] = t(rmultinom(1, 1, weights_multi(y[ii,], prob, mu, Sigma,C)))
+      z[ii,]    = t(rmultinom(1, 1, weights_multi(y[ii,], prob, mu, Sigma,C)))
       #z1[ii,]= which[max(weights_multi(y[ii,], prob, mu, Sigma,C))]
+      class[ii] = which(z[ii,] == 1)
     }
     
-    #GCOV          =  Gcov(y,C,z,N)
+    GCOV    =  Gcov(y,C,z,N)
     #print(GCOV$gamma[[2]][1])
-    GCOV           =  GcovCPP(y, C, z, N)
+    #GCOV           =  GcovCPP(y, C, z, N)
     
     ## Mstep Estimation:
     for(jj in 1:C)
@@ -45,7 +47,7 @@ emstep = function(y, C, mu, Sigma, prob, iter.max, N, ...)
       else
       {
         y1           = y[which(z[,jj]==1), ]
-        mu[jj,]      = colMeans(y1)
+        #mu[jj,]      = colMeans(y1)
         Sigma[,,jj]  = GCOV                     #Calculated by G_cov function. 
         prob[jj]     = nrow(y1)/nrow(y)
       }
@@ -103,13 +105,13 @@ nparams.G = function(C,d)
 
 
 
-bic.G = function(C,y, mu, Sigma, N, prob, iter.max,...)
+bic.G = function(C,y, p, mu, Sigma, N, prob, iter.max,...)
 {
   mu    = emstep(y, C, mu, Sigma, prob, iter.max, N)$mu
   Sigma = emstep(y, C, mu, Sigma, prob, iter.max, N)$Sigma
   z     = emstep(y, C, mu, Sigma, prob, iter.max, N)$z
   if(any(colSums(z)<=1)) return(-1e6)
-  return(list(bic.value = 2 * loglik.G(y, prob, mu, Sigma,C, N) - (nparams.G(C,nrow(y)) * log(N)), z = z, Sigma = Sigma, mu = mu))
+  return(list(bic.value = 2 * loglik.G(y, prob, mu, Sigma,C, N) - (nparams.G(C,nrow(y)) * log(p)), z = z, Sigma = Sigma, mu = mu))
   
 }
 
