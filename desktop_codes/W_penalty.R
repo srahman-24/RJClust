@@ -1,6 +1,8 @@
 library(mclust)
 library(RJcluster)
 
+
+
 # New Penalty
 n     = c(20,20,20,20)         # Unequal Cluster size settings
 p     = 220                    # first 4 being informative and remaining ones are non-informative 
@@ -34,22 +36,42 @@ X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),1:10]               =   rnorm(n[4]*10
 X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),(1+10):(10+10)]     =   rnorm(n[4]*10, -1.5, sigma1)
 
 
-#Z           =  scale(X, center = T, scale = T)
-
 GG          =  tcrossprod(X, X)/p
 N           =  sum(n)
 gg_wodiag   =  GG - diag(diag(GG))
 GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N-1)), diag(GG))
 
+##################### GAP statistics #################
+
+
 #Clust_GAP   = clusGap(GG_new, FUN= pam, K.max = 20, B = 100, d.power = 2)
 #plot(Clust_GAP)
 
+#####################################################################################
 
 BIC_GG      =  Mclust(GG_new, modelNames = "VVI")
 table(BIC_GG$classification, group)
 f_rez(BIC_GG$classification, group)
 plot(BIC_GG$BIC)
 
+######################## BIC log(p) ######################
+
+bic = NULL 
+for(kk in 1:20){
+  
+  Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
+  loglik  = Gclust$loglik
+  print(loglik)
+  nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
+  bic     = c(bic, 2 * loglik - nparams * log(p))
+  
+}
+plot(bic, type = "l", main = "High signal", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
+abline(v = 4, col = "red", lwd = 2)
+K = c(K, which.max(bic))
+
+
+################################################################################
 
 Gclust      =  Mclust(GG_new, modelNames = "VVI", G = 1, verbose = F)
 M1          =  Gclust$parameters$mean  #N by 1 matrix
@@ -74,6 +96,10 @@ plot(W1, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "bl
 abline(h = 100, lwd = 2, col = "red")
 abline(h = 1, lwd = 2, col = "brown")
 
+BIC_GG      =  Mclust(GG_new, modelNames = "VVI")
+table(BIC_GG$classification, group)
+f_rez(BIC_GG$classification, group)
+plot(BIC_GG$BIC)
 
 
 

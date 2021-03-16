@@ -4,7 +4,8 @@ library(mvtnorm)
 library(Rcpp)
 
 
-#source("Gcov.R")
+source("Gcov.R")
+source("RJ_mean.R")
 Rcpp::sourceCpp('Gcov.cpp')
 
 ##EM function
@@ -61,7 +62,7 @@ emstep = function(y, C, mu, Sigma, prob, iter.max, N, ...)
     {break}
     else  
     {
-      loglik_new  = loglik.G(y, prob, mu, Sigma, C,N)
+      loglik_new  = loglik.G(y, prob, mu, Sigma, C, N)
     }
     #print(Sigma)
   } 
@@ -99,7 +100,7 @@ loglik.G = function(y, prob, mu, Sigma,C, N,...)
 
 nparams.G = function(C,d)
 {
-  nparams = C * d                  # mu
+  nparams = 2*C + choose(C, 2)     # mu
   nparams = nparams + (C - 1)      # prob
   nparams = nparams + 4*C + 3*C*(C-1)/2 + C*(C-1)*(C-2)/3 + (C + C + C*(C-1)/2) # Sigma:  3 * C + 1 + (C + 1) * C * (C - 1)/3 
   #nparams = nparams + C^3

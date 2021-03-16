@@ -10,7 +10,7 @@ source("AMI.R")
     gg_wdiag    =    cbind(gg_wodiag, diag(gg))
     GG_new      =    cbind(gg_wodiag + diag(colSums(gg_wodiag)/(n-1)), diag(gg))
 
-  Bic_eval = list(); #Lat  = Sigma = mu = list();  
+  Bic_eval = list();    #Lat  = Sigma = mu = list();  
   Lat = list(); 
   bic_eval1 = NULL
   d = (n+1);  N  =  n
@@ -69,7 +69,6 @@ return(list(bic = Clust.bic, bic_eval = bic_eval, n.clust = n.clust, groupG = gr
  
    
 }
-
 
 # Mclust(GG_new, modelNames = "VVI")$BIC 
 # Class.Sigma[[1]][1:5, 1:5]
