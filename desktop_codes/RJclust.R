@@ -4,7 +4,7 @@ source("bicRJ.R")
 source("AMI.R")  
     p           =    ncol(Z)
     n           =    nrow(Z)      
-    GG          =    Z%*%t(Z)/p
+    GG          =    tcrossprod(X, X)/p
     gg          =    GG 
     gg_wodiag   =    gg - diag(diag(gg))
     gg_wdiag    =    cbind(gg_wodiag, diag(gg))
