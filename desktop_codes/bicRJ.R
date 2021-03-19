@@ -79,8 +79,7 @@ loglik.G = function(y, prob, mu, Sigma,C, N,...)
     ww = NULL 
     for(kk in 1:C)
     {ww        =  c(ww, prob[kk]*dmvnorm(y[ii,], mean = mu[kk,], Sigma[,,kk], log = FALSE))}
-    
-    ll = c(ll,log(sum(ww)))
+            ll = c(ll,log(sum(ww)))
   }
   return(sum(ll))
 }

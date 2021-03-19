@@ -1,4 +1,4 @@
-RJclust = function(Z, group, C.max, iter.max){
+RJclust = function(Z, C.max, iter.max){
 
 source("bicRJ.R")
 source("AMI.R")  
@@ -10,22 +10,23 @@ source("AMI.R")
     gg_wdiag    =    cbind(gg_wodiag, diag(gg))
     GG_new      =    cbind(gg_wodiag + diag(colSums(gg_wodiag)/(n-1)), diag(gg))
 
-  Bic_eval = list();    #Lat  = Sigma = mu = list();  
-  Lat = list(); 
-  bic_eval1 = NULL
-  d = (n+1);  N  =  n
+    Bic_eval = list();    #Lat  = Sigma = mu = list();  
+    Lat = list(); 
+    bic_eval1 = NULL
+    d = (n+1);  N  =  n
   
   #for(rr in 1:20)
   #{
+  iter.max = 1000
   bic_eval1 = NULL 
-  bic_eval1  = c(bic_eval1, Mclust(GG_new, G = 1)$bic)
+  bic_eval1  = c(bic_eval1, Mclust(GG_new, G = 1, verbose = F)$bic)
   for(C in 2:C.max)
   { 
     mu           =  array(0, dim = c(C, N+1))
     Sigma        =  array(0, dim = c(N+1, N+1, C))
     #R           =  matrix(0, N, C)         
-    init         =  Mclust(GG_new, G = C)
-    init         =  Mclust(GG_new, modelNames = "VVI", G = C)
+    init         =  Mclust(GG_new, verbose = F, G = C)
+    init         =  Mclust(GG_new, verbose = F, modelNames = "VVI", G = C)
     #for(ii in 1:N){ R[ii,]      =  t(rmultinom(1, 1, rep(1/C,C)))} 
     #for(jj in 1:C){ mu[jj,]     =  colMeans(GG_new[which(R[,jj]==1), ]); Sigma[, ,jj] = diag(N+1) }
     mu           =  t(init$parameters$mean)
@@ -41,7 +42,7 @@ source("AMI.R")
   #}
   
   
-  plot(bic_eval,type = "l")
+  plot(bic_eval1,type = "l")
   
   n.clust        =    which(bic_eval == max(bic_eval))  ;
   Clust.bic      =    max(bic_eval)
@@ -62,10 +63,10 @@ source("AMI.R")
   }
   
   
-  ami   =   f_rez(group, groupG)$ami
+  #ami   =   f_rez(group, groupG)$ami
   
   
-return(list(bic = Clust.bic, bic_eval = bic_eval, n.clust = n.clust, groupG = groupG, Sigma = Class.Sigma, mean = Class.mean, pro = Class.pro, ami = ami))
+return(list(bic = Clust.bic, bic_eval = bic_eval, n.clust = n.clust, groupG = groupG, Sigma = Class.Sigma, mean = Class.mean, pro = Class.pro))
  
    
 }

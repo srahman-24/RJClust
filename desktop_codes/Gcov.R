@@ -33,7 +33,7 @@ for(ii in 1:C)
       GG_1                = GG[gamma[[ii]], gamma[[jj]]]
       nn[ii,jj]           = (length(GG_1) - nrow(GG_1))
       mean.diag[ii]       = mean(diag(GG_1))   #diagonal mean
-      ss.diag[ii]         = var(diag(GG_1))   #diagonal variance
+      ss.diag[ii]         = var(diag(GG_1))    #diagonal variance
       M = mean.off[ii,jj] = (sum(GG_1) - sum(diag(GG_1)))/nn[ii,jj]  #offdiagonals mean
       ss.off[ii,jj]       = (sum((GG_1 - M)^2) - sum(diag((GG_1 - M)^2)))/nn[ii,jj] #offdiagonals variance  
       }
