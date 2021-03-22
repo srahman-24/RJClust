@@ -1,13 +1,15 @@
 library(mclust)
 library(RJcluster)
 
+K_bic = K_aic = NULL 
+for(ii in 1:100)
 
-
+{
 # New Penalty
 n     = c(20,20,20,20)         # Unequal Cluster size settings
 p     = 220                    # first 4 being informative and remaining ones are non-informative 
 C     = 4                      # initializing every individual as their own clusters 
-sigma1 = 2                     # noise level in informative variables
+sigma1 = 1                     # noise level in informative variables
 sigma2 = 1                     # noise level in uninformative variables
 ## sigma = 1 ( SNR : high signal)
 ## sigma = 2 ( SNR:  low  signal) 
@@ -60,14 +62,14 @@ GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N-1)), diag(GG))
 
 #####################################################################################
 
-BIC_GG      =  Mclust(GG_new, modelNames = "VVI")
-table(BIC_GG$classification, group)
-f_rez(BIC_GG$classification, group)
-plot(BIC_GG$BIC)
+#BIC_GG      =  Mclust(GG_new, modelNames = "VVI")
+#table(BIC_GG$classification, group)
+#f_rez(BIC_GG$classification, group)
+#plot(BIC_GG$BIC)
 
 ######################## BIC log(p) ######################
 
-bic = NULL ; aic = NULL ; K_bic = K_aic = NULL 
+bic = NULL ; aic = NULL ;
 for(kk in 1:20){
   
   Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
@@ -78,13 +80,17 @@ for(kk in 1:20){
   aic     = c(aic, loglik - 2*nparams)
   
 }
-plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
-abline(v = 4, col = "red", lwd = 2)
-plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
-abline(v = 4, col = "red", lwd = 2)
+#plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
+#abline(v = 4, col = "red", lwd = 2)
+#plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
+#abline(v = 4, col = "red", lwd = 2)
 K_bic = c(K_bic, which.max(bic))
 K_aic = c(K_aic, which.max(aic))
+}
+
+
 boxplot(K_bic, K_aic)
+
 
 ################################################################################
 
