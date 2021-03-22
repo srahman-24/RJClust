@@ -6,7 +6,7 @@ library(Rcpp)
 
 source("Gcov.R")
 source("RJ_mean.R")
-Rcpp::sourceCpp('Gcov.cpp')
+#Rcpp::sourceCpp('Gcov.cpp')
 
 ##EM function
 
@@ -16,6 +16,7 @@ weights_multi     = function(x, prob, mu, Sigma,C, ...)
   for(kk in 1:C)
     ww        = c(ww, prob[kk]*dmvnorm(x, mean = mu[kk,], Sigma[,,kk], log = FALSE))
     return(ww/sum(ww))
+  
 }
 
 

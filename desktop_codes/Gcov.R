@@ -21,6 +21,7 @@ Gcov = function(GG,C,z,N,...)
     labels[gamma[[ii]]] =  ii
   }
   
+  
 ###Diagonal Covariance Estimates:
 ###Total number of Diagonal Parameters: (C+1)  
 for(ii in 1:C)

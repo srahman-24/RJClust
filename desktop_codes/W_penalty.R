@@ -7,7 +7,7 @@ library(RJcluster)
 n     = c(20,20,20,20)         # Unequal Cluster size settings
 p     = 220                    # first 4 being informative and remaining ones are non-informative 
 C     = 4                      # initializing every individual as their own clusters 
-sigma1 = 1                     # noise level in informative variables
+sigma1 = 2                     # noise level in informative variables
 sigma2 = 1                     # noise level in uninformative variables
 ## sigma = 1 ( SNR : high signal)
 ## sigma = 2 ( SNR:  low  signal) 
@@ -36,6 +36,17 @@ X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),1:10]               =   rnorm(n[4]*10
 X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),(1+10):(10+10)]     =   rnorm(n[4]*10, -1.5, sigma1)
 
 
+mu1 = as.matrix(c(rep(2.5, 10), rep(1.5, 10), rep(0, 200)))
+mu2 = as.matrix(c(rep(0, 10), rep(1.5, 10), rep(0, 200)))
+mu3 = as.matrix(c(rep(0, 10), rep(-1.5, 10), rep(0, 200)))
+mu4 = as.matrix(c(rep(-2.5, 10), rep(-1.5, 10), rep(0, 200)))
+
+MU = rbind(t(mu1), t(mu2), t(mu3), t(mu4))
+dist(MU)
+
+MM = tcrossprod(MU, MU)/p
+dist(MM)
+
 GG          =  tcrossprod(X, X)/p
 N           =  sum(n)
 gg_wodiag   =  GG - diag(diag(GG))
@@ -56,7 +67,7 @@ plot(BIC_GG$BIC)
 
 ######################## BIC log(p) ######################
 
-bic = NULL 
+bic = NULL ; aic = NULL ; K_bic = K_aic = NULL 
 for(kk in 1:20){
   
   Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
@@ -64,12 +75,16 @@ for(kk in 1:20){
   print(loglik)
   nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
   bic     = c(bic, 2 * loglik - nparams * log(p))
+  aic     = c(aic, loglik - 2*nparams)
   
 }
-plot(bic, type = "l", main = "High signal", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
+plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
 abline(v = 4, col = "red", lwd = 2)
-K = c(K, which.max(bic))
-
+plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
+abline(v = 4, col = "red", lwd = 2)
+K_bic = c(K_bic, which.max(bic))
+K_aic = c(K_aic, which.max(aic))
+boxplot(K_bic, K_aic)
 
 ################################################################################
 
