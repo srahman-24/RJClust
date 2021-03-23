@@ -9,6 +9,8 @@ gg_wodiag   =  GG - diag(diag(GG))
 GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N-1)), diag(GG))
 
 bic = NULL ; aic = NULL ;
+
+### To Rachael: make this loop in C++ to make it faster.
 for(kk in 1:20){
   
   Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)

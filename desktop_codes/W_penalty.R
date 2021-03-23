@@ -74,7 +74,6 @@ for(kk in 1:20){
   
   Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
   loglik  = Gclust$loglik
-  print(loglik)
   nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
   bic     = c(bic, 2 * loglik - nparams * log(p))
   aic     = c(aic, loglik - 2*nparams)

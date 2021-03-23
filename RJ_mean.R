@@ -9,7 +9,6 @@ N         = length(class)
 for(ii in 1:K)
 {
   gamma[[ii]]         =  which(class == ii) 
-  labels[gamma[[ii]]] =  ii
 }
 
 
