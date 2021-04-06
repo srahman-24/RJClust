@@ -1,9 +1,9 @@
 library(mclust)
 library(RJcluster)
 
-K_bic = K_aic = NULL 
-for(ii in 1:100)
-
+K_bic = K_aic = K_hs =  NULL 
+ami_bic = ami_aic = ami_hs = NULL 
+for (ii in 1:100)
 {
 # New Penalty
 n     = c(20,20,20,20)         # Unequal Cluster size settings
@@ -23,19 +23,19 @@ X    = matrix(rnorm(sum(n)*p,0, sigma2), nrow = sum(n), ncol = p, byrow = TRUE)
 #Cluster 1: N(2.5, sigma)(1-10), N(1.5, sigma)(11-20) 
 
 X[1:n[1],1:10]                                       =   rnorm(n[1]*10, 2.5, sigma1)
-X[1:n[1],(1+10):(10+10)]                             =   rnorm(n[1]*10, 1.5, sigma1)
+X[1:n[1],(1 + 10):(10 + 10)]                         =   rnorm(n[1]*10, 1.5, sigma1)
 
 #Cluster 2: N(0, sigma)(1-10), N(1.5, sigma) (11-20)
-X[(n[1]+1):(n[1]+n[2]),1:10]                         =   rnorm(n[2]*10, 0, sigma1)
-X[(n[1]+1):(n[1]+n[2]),(1+10):(10+10)]               =   rnorm(n[2]*10, 1.5, sigma1)
+X[(n[1] + 1):(n[1] + n[2]),1:10]                         =   rnorm(n[2]*10, 0, sigma1)
+X[(n[1] + 1):(n[1] + n[2]),(1 + 10):(10 + 10)]           =   rnorm(n[2]*10, 1.5, sigma1)
 
 #Cluster 3: N(0, sigma)(1-10), N(-1.5,sigma)(11-20)
-X[(n[1]+n[2]+1):(n[1]+n[2]+n[3]),1:10]               =   rnorm(n[3]*10, 0, sigma1)
-X[(n[1]+n[2]+1):(n[1]+n[2]+n[3]),(1+10):(10+10)]     =   rnorm(n[3]*10, -1.5, sigma1)
+X[(n[1] + n[2] + 1):(n[1] + n[2] + n[3]),1:10]               =   rnorm(n[3]*10, 0, sigma1)
+X[(n[1] + n[2] + 1):(n[1] + n[2] + n[3]),(1 + 10):(10 + 10)] =   rnorm(n[3]*10, -1.5, sigma1)
 
 #Cluster 4: N(-2.5,sigma)(1-10), N(-1.5, sigma)(11-20)
-X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),1:10]               =   rnorm(n[4]*10, -2.5, sigma1)
-X[(n[1]+n[2]+n[3]+1):(n[1]+n[2]+n[3]+n[4]),(1+10):(10+10)]     =   rnorm(n[4]*10, -1.5, sigma1)
+X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),1:10]               =   rnorm(n[4]*10, -2.5, sigma1)
+X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),(1 + 10):(10 + 10)]    =   rnorm(n[4]*10, -1.5, sigma1)
 
 
 mu1 = as.matrix(c(rep(2.5, 10), rep(1.5, 10), rep(0, 200)))
@@ -49,12 +49,95 @@ dist(MU)
 MM = tcrossprod(MU, MU)/p
 dist(MM)
 
+X1 = X
+X = X1
+
 GG          =  tcrossprod(X, X)/p
 N           =  sum(n)
 gg_wodiag   =  GG - diag(diag(GG))
-GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N-1)), diag(GG))
+GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N - 1)), diag(GG))
 
 ##################### GAP statistics #################
+Gclust      =  Mclust(GG_new, modelNames = "VVI", G = 1, verbose = F)
+M1          =  Gclust$parameters$mean  #N by 1 matrix
+RJMean1     =  RJ_mean(1, Gclust$class, GG)
+W = W1 = NULL 
+#MM  = matrix(0, nrow = N, ncol = N+1)
+for (kk in 2:10)
+{
+  Gclust      =  Mclust(GG_new, G = kk, modelNames = "VVI", verbose = F)
+  RJMean      =  RJ_mean(kk, Gclust$class, GG, RJMean1)
+  #Mean        =  Gclust$parameters$mean
+  #W           =  c(W, kmeans(t(Mean), centers = t(M1), iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
+  W1          =  c(W1, kmeans(RJMean, centers = RJMean1, iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
+  #M1          =  Mean
+  RJMean1     =  RJMean
+}
+
+
+#W = W1 + (2:10)*(N+1)/sqrt(p)
+W  = W1 + (2:10)*(N + 1)/(p)^(1)
+#W = W1 + (2:10)^2/p
+#W = W1 + (2:10/p)
+
+plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "K", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
+
+
+
+K_hat = which.min(W)
+GG_W  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
+#table(GG_W$classification, group)
+f_rez(GG_W$classification, group)$ami
+ami_hs  = c(ami_hs, f_rez(GG_W$classification, group)$ami)
+
+K_hs = c(K_hs, which.min(W)) 
+
+bic = NULL ; aic = NULL ;
+for (kk in 1:20) {
+  
+  Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
+  loglik  = Gclust$loglik
+  nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
+  bic     = c(bic, 2 * loglik - nparams * log(p))
+  aic     = c(aic, loglik - 2*nparams)
+  
+}
+
+#plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
+#abline(v = 4, col = "red", lwd = 2)
+#plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
+#abline(v = 4, col = "red", lwd = 2)
+K_bic = c(K_bic, which.max(bic))
+K_aic = c(K_aic, which.max(aic))
+
+
+K_hat = which.max(bic)
+GG_bic  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
+ami_bic = c(ami_bic, f_rez(GG_bic$classification, group)$ami)
+K_hat = which.max(aic)
+GG_aic  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
+ami_aic = c(ami_aic, f_rez(GG_aic$classification, group)$ami)
+
+
+}
+
+
+boxplot(K_bic, K_aic, K_hs, names = c("BIC", "AIC", "HS"), main = "High signal - Low noise (unbalanced) ", 
+        col = c("orange", "yellow", "gray"), ylab = "Estimated number of clusters")
+boxplot(ami_bic, ami_aic, ami_hs, names = c("BIC", "AIC", "HS"), main = "High signal - Low noise (unbalanced) ", 
+        col = c("orange", "yellow", "gray"), ylab = "Adjusted Mutual Index")
+
+
+median(K_hs)
+mean(K_hs)
+sd(K_hs)
+
+length(K_hs)
+
+
+#plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
+plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "K", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
+
 
 
 #Clust_GAP   = clusGap(GG_new, FUN= pam, K.max = 20, B = 100, d.power = 2)
@@ -69,26 +152,7 @@ GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N-1)), diag(GG))
 
 ######################## BIC log(p) ######################
 
-bic = NULL ; aic = NULL ;
-for(kk in 1:20){
-  
-  Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
-  loglik  = Gclust$loglik
-  nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
-  bic     = c(bic, 2 * loglik - nparams * log(p))
-  aic     = c(aic, loglik - 2*nparams)
-  
-}
-#plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
-#abline(v = 4, col = "red", lwd = 2)
-#plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
-#abline(v = 4, col = "red", lwd = 2)
-K_bic = c(K_bic, which.max(bic))
-K_aic = c(K_aic, which.max(aic))
-}
 
-
-boxplot(K_bic, K_aic)
 
 
 ################################################################################
@@ -102,6 +166,7 @@ for (kk in 2:10)
 {
   Gclust      =  Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
   RJMean      =  RJ_mean(kk, Gclust$class, GG)
+  print(dim(RJMean))
   #Mean        =  Gclust$parameters$mean
   #W           =  c(W, kmeans(t(Mean), centers = t(M1), iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
   W1          =  c(W1, kmeans(RJMean, centers = RJMean1, iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
@@ -109,8 +174,16 @@ for (kk in 2:10)
   RJMean1     =  RJMean
 }
 
+
+#W = W1 + (2:10)*(N+1)/sqrt(p)
+W = W1 + (2:10)*(N+1)/p
+#W = W1 + (2:10)^2/p
+#W = W1 + (2:10/p)
+
+which.min(W)
+
 #plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
-plot(W1, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
+plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
 
 #plot(W1, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "k", lwd = 2, pch = 2, col = "blue", main = "Data")
 abline(h = 100, lwd = 2, col = "red")
