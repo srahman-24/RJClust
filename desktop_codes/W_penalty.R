@@ -48,19 +48,19 @@ dist(MU)
 
 MM = tcrossprod(MU, MU)/p
 dist(MM)
+#N           =  sum(n)
 
-X1 = X
-X = X1
+#X = scale(X, center = T, scale = T)
 
+#X = D
+N  = nrow(X)
+p  = ncol(X)
 GG          =  tcrossprod(X, X)/p
-N           =  sum(n)
 gg_wodiag   =  GG - diag(diag(GG))
 GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N - 1)), diag(GG))
-
-##################### GAP statistics #################
 Gclust      =  Mclust(GG_new, modelNames = "VVI", G = 1, verbose = F)
 M1          =  Gclust$parameters$mean  #N by 1 matrix
-RJMean1     =  RJ_mean(1, Gclust$class, GG)
+RJMean1     =  RJ_mean (1, Gclust$class, GG)
 W = W1 = NULL 
 #MM  = matrix(0, nrow = N, ncol = N+1)
 for (kk in 2:10)
@@ -75,22 +75,23 @@ for (kk in 2:10)
 }
 
 
-#W = W1 + (2:10)*(N+1)/sqrt(p)
-W  = W1 + (2:10)*(N + 1)/(p)^(1)
+W  = W1 + (2:10)*(N + 1)/(p)
+W  = W1 + (2:10)*(N + 1)*log(log(p))/p
 #W = W1 + (2:10)^2/p
 #W = W1 + (2:10/p)
 
-plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "K", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
+plot(1:9, W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "K", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
+#K_hat
 
-
-
+K_hs  = c(K_hs, which.min(W)) 
 K_hat = which.min(W)
 GG_W  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
-#table(GG_W$classification, group)
+table(GG_W$classification, group)
 f_rez(GG_W$classification, group)$ami
 ami_hs  = c(ami_hs, f_rez(GG_W$classification, group)$ami)
 
-K_hs = c(K_hs, which.min(W)) 
+
+
 
 bic = NULL ; aic = NULL ;
 for (kk in 1:20) {
@@ -98,18 +99,17 @@ for (kk in 1:20) {
   Gclust  = Mclust(GG_new, modelNames = "VVI", G = kk, verbose = F)
   loglik  = Gclust$loglik
   nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
-  bic     = c(bic, 2 * loglik - nparams * log(p))
+  bic     = c(bic, 2 * loglik - nparams * log(N))
   aic     = c(aic, loglik - 2*nparams)
   
 }
 
-#plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
+plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
 #abline(v = 4, col = "red", lwd = 2)
 #plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
 #abline(v = 4, col = "red", lwd = 2)
 K_bic = c(K_bic, which.max(bic))
 K_aic = c(K_aic, which.max(aic))
-
 
 K_hat = which.max(bic)
 GG_bic  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
