@@ -1,68 +1,84 @@
-RJ_mean = function(K, class, GG, ...){
-
-gamma     = list()
-mean.diag = rep(1,K)
-nn        = matrix(0, nrow = K, ncol = K)
-mean.off  = matrix(0, nrow = K, ncol = K)
-N         = length(class)
-
-for(ii in 1:K)
-{
-  gamma[[ii]]         =  which(class == ii) 
-}
-
-
-for(ii in 1:K)
-{ 
-  for(jj in ii:K)
+RJ_mean = function(K, class, GG, Mean1){
+  
+  gamma     = list()
+  mean.diag = rep(1,K)
+  nn        = matrix(0, nrow = K, ncol = K)
+  mean.off  = matrix(0, nrow = K, ncol = K)
+  N         = length(class)
+  
+  for (ii in 1:K)
   {
-    if(ii == jj)
-    { 
-      #homo-off diagonals
-      GG_1                = GG[gamma[[ii]], gamma[[jj]]]
-      nn[ii,jj]           = (length(GG_1) - nrow(GG_1))
-      mean.diag[ii]       = mean(diag(GG_1))   #diagonal mean
-      mean.off[ii,jj]     = (sum(GG_1) - sum(diag(GG_1)))/nn[ii,jj]  #offdiagonals mean
-    }
-    else
+    gamma[[ii]]         =  which(class == ii) 
+    if (length(gamma[[ii]]) == 0)
     {
-      #hetero-off diagonals 
-      GG_2                   = GG[gamma[[ii]], gamma[[jj]]]
-      mean.off[ii,jj]        = mean(GG_2)
+      return(Mean1)
+      break
     }
   }
-}
-
-# mean.diag     # real diagonals 
-# mean.off      # diagonals are homogeneous off diagonals
-if(K > 1)
-{
-mean.off      =  mean.off + t(mean.off) - diag(diag(mean.off))
-}
-
-
-label = class
-MU = matrix(0, nrow = K, ncol = N+1)
-for(ii in 1: K)
-{
-  object  =  gamma[[ii]][1]
-  for(jj in 1:N)
-  {
-    if(label[jj] == label[object])
+  
+  
+  for (ii in 1:K)
+  { 
+    for (jj in ii:K)
     {
-      MU[ii, jj] = diag(mean.off)[label[object]]
-    }
-    if(label[jj] != label[object])
-    {
-      MU[ii, jj] = mean.off[label[object], label[jj]]
+      if (ii == jj)
+      { 
+        #homo-off diagonals
+        GG_1                = GG[gamma[[ii]], gamma[[jj]]]
+        nn[ii,jj]           = (length(GG_1) - nrow(GG_1))
+        mean.diag[ii]       = mean(diag(GG_1))   #diagonal mean
+        mean.off[ii,jj]     = (sum(GG_1) - sum(diag(GG_1)))/nn[ii,jj]  #offdiagonals mean
+      }
+      else
+      {
+        #hetero-off diagonals 
+        GG_2                   = GG[gamma[[ii]], gamma[[jj]]]
+        mean.off[ii,jj]        = mean(GG_2)
+      }
     }
   }
-      MU[ii, N+1] = mean.diag[label[object]]
+  
+  # mean.diag     # real diagonals 
+  # mean.off      # diagonals are homogeneous off diagonals
+  if (K > 1)
+  {
+    mean.off      =  mean.off + t(mean.off) - diag(diag(mean.off))
+  }
+  
+  
+  label = class
+  MU = matrix(0, nrow = K, ncol = N+1)
+  for (ii in 1 : K)
+  {
+    if (length(gamma[[ii]]) == 0)
+    {
+      break
+    }
+    else{
+      object  =  gamma[[ii]][1]
+      for (jj in 1:N)
+      {
+        if (label[jj] == label[object])
+        {
+          MU[ii, jj] = diag(mean.off)[label[object]]
+        }
+        if (label[jj] != label[object])
+        {
+          MU[ii, jj] = mean.off[label[object], label[jj]]
+        }
+      }
+      MU[ii, N + 1] = mean.diag[label[object]]
+    }
+  }
+  
+  return(MU)
+  
 }
 
-return(MU)
 
+beta = 1
+test <- function(beta){
+  if (beta == 1) { return("Inner beta is 1") }
+  print("Its not working")
+  return(beta)
 }
-
-
-
