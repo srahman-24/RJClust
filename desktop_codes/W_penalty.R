@@ -1,16 +1,17 @@
 library(mclust)
 library(RJcluster)
+library(latex2exp)
 
-K_bic = K_aic = K_hs =  NULL 
-ami_bic = ami_aic = ami_hs = NULL 
+K_bic = K_aic = K_hs1 = K_hs2 = NULL 
+ami_bic = ami_aic = ami_hs1 = ami_hs2 = NULL 
 for (ii in 1:100)
 {
 # New Penalty
-n     = c(20,20,20,20)         # Unequal Cluster size settings
-p     = 220                    # first 4 being informative and remaining ones are non-informative 
-C     = 4                      # initializing every individual as their own clusters 
-sigma1 = 1                     # noise level in informative variables
-sigma2 = 1                     # noise level in uninformative variables
+n      = c(20,20,20,20)         # Unequal Cluster size settings
+p      = 220                    # first 4 being informative and remaining ones are non-informative 
+C      = 4                      # initializing every individual as their own clusters 
+sigma1 = 1                      # noise level in informative variables
+sigma2 = 1                      # noise level in uninformative variables
 ## sigma = 1 ( SNR : high signal)
 ## sigma = 2 ( SNR:  low  signal) 
 group = c(rep(1,n[1]), rep(2,n[2]), rep(3,n[3]), rep(4,n[4]))
@@ -34,7 +35,7 @@ X[(n[1] + n[2] + 1):(n[1] + n[2] + n[3]),1:10]               =   rnorm(n[3]*10, 
 X[(n[1] + n[2] + 1):(n[1] + n[2] + n[3]),(1 + 10):(10 + 10)] =   rnorm(n[3]*10, -1.5, sigma1)
 
 #Cluster 4: N(-2.5,sigma)(1-10), N(-1.5, sigma)(11-20)
-X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),1:10]               =   rnorm(n[4]*10, -2.5, sigma1)
+X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),1:10]                  =   rnorm(n[4]*10, -2.5, sigma1)
 X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),(1 + 10):(10 + 10)]    =   rnorm(n[4]*10, -1.5, sigma1)
 
 
@@ -60,36 +61,90 @@ gg_wodiag   =  GG - diag(diag(GG))
 GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N - 1)), diag(GG))
 Gclust      =  Mclust(GG_new, modelNames = "VVI", G = 1, verbose = F)
 M1          =  Gclust$parameters$mean  #N by 1 matrix
-RJMean1     =  RJ_mean (1, Gclust$class, GG)
+RJMean1     =  RJ_mean(1, Gclust$class, GG)
 W = W1 = NULL 
 #MM  = matrix(0, nrow = N, ncol = N+1)
 for (kk in 2:10)
 {
   Gclust      =  Mclust(GG_new, G = kk, modelNames = "VVI", verbose = F)
   RJMean      =  RJ_mean(kk, Gclust$class, GG, RJMean1)
-  #Mean        =  Gclust$parameters$mean
-  #W           =  c(W, kmeans(t(Mean), centers = t(M1), iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
   W1          =  c(W1, kmeans(RJMean, centers = RJMean1, iter.max = 1000, algorithm = "Lloyd")$tot.withinss)
-  #M1          =  Mean
   RJMean1     =  RJMean
 }
 
+W = NULL 
 
-W  = W1 + (2:10)*(N + 1)/(p)
-W  = W1 + (2:10)*(N + 1)*log(log(p))/p
-#W = W1 + (2:10)^2/p
-#W = W1 + (2:10/p)
+W        = W1 + (2:10)*(N + 1)/(p)
+K_hat    = which.min(W)
+GG_W     = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
+#table(GG_W$classification, group)
+#f_rez(GG_W$classification, group)$ami
+ami_hs1  = c(ami_hs1, Mutual_Information(GG_W$classification, group)$ami)
+K_hs1    = c(K_hs1, which.min(W))
 
-plot(1:9, W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "K", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
-#K_hat
 
-K_hs  = c(K_hs, which.min(W)) 
-K_hat = which.min(W)
-GG_W  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
-table(GG_W$classification, group)
-f_rez(GG_W$classification, group)$ami
-ami_hs  = c(ami_hs, f_rez(GG_W$classification, group)$ami)
 
+library(ggplot2)
+
+pic = ggplot(data = NULL, aes(x = 1:9, y = W1, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
+  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K+1} | \\widehat{\\Lambda}_{K})')) + 
+  ggtitle("Hockey stick criterion")  + theme_minimal()
+pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
+  plot.title   = element_text(color = "black", size = 14, face="bold"),
+  axis.title.x = element_text(color = "black", size = 12, face="bold"),
+  axis.title.y = element_text(color = "black", size = 14, face="bold"), 
+  axis.text.x  = element_text(face  = "bold",  size = 12),
+  axis.text.y  = element_text(face  = "bold",  size = 12), 
+  axis.line    = element_line(colour = "darkblue", size = 1, linetype = "solid"),
+  #panel.grid.major.x = element_blank(),
+  panel.grid.minor.x = element_blank()
+   )  
+
+pic = ggplot(data = NULL, aes(x = 1:9, y = W, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
+  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K+1} | \\widehat{\\Lambda}_{K}) + (K+1)N\\frac{1}{P}$')) + 
+  ggtitle(TeX('Hockey stick penalty $l(P) = 1$'))  + theme_minimal()
+pic
+pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
+  plot.title   = element_text(color = "black", size = 14, face="bold"),
+  axis.title.x = element_text(color = "black", size = 12, face="bold"),
+  axis.title.y = element_text(color = "black", size = 14, face="bold"), 
+  axis.text.x  = element_text(face  = "bold",  size = 12),
+  axis.text.y  = element_text(face  = "bold",  size = 12), 
+  axis.line    = element_line(colour = "darkblue", size = 1, linetype = "solid"),
+  #panel.grid.major.x = element_blank(),
+  panel.grid.minor.x = element_blank()
+)  
+
+
+
+
+
+plot(W, ylab = "|mu_(k+1) - mu_(k)|^2", xlab = "K", lwd = 2, pch = 2, col = "blue", main = "Data", type = "l")
+
+
+W       = W1 + (2:10)*(N + 1)*log(log(p))/p
+K_hat   = which.min(W)
+GG_W    = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
+#table(GG_W$classification, group)
+#f_rez(GG_W$classification, group)$ami
+ami_hs2  = c(ami_hs2, Mutual_Information(GG_W$classification, group)$ami)
+K_hs2    = c(K_hs2, which.min(W))
+
+
+pic = ggplot(data = NULL, aes(x = 1:9, y = W, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
+  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K+1} | \\widehat{\\Lambda}_{K}) + (K+1)N\\frac{loglog(P)}{P}$')) + 
+  ggtitle(TeX('Hockey stick penalty $l(P) = loglog(P)$'))  + theme_minimal()
+pic
+pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
+  plot.title   = element_text(color = "black", size = 14, face="bold"),
+  axis.title.x = element_text(color = "black", size = 12, face="bold"),
+  axis.title.y = element_text(color = "black", size = 14, face="bold"), 
+  axis.text.x  = element_text(face  = "bold",  size = 12),
+  axis.text.y  = element_text(face  = "bold",  size = 12), 
+  axis.line    = element_line(colour = "darkblue", size = 1, linetype = "solid"),
+  #panel.grid.major.x = element_blank(),
+  panel.grid.minor.x = element_blank()
+)  
 
 
 
@@ -100,32 +155,32 @@ for (kk in 1:20) {
   loglik  = Gclust$loglik
   nparams = nMclustParams(modelName = "VVI", d = ncol(GG_new) , G = kk)
   bic     = c(bic, 2 * loglik - nparams * log(N))
-  aic     = c(aic, loglik - 2*nparams)
+  aic     = c(aic, 2*loglik - 2 * nparams)
   
 }
 
-plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(p)")
-#abline(v = 4, col = "red", lwd = 2)
-#plot(aic, type = "l", main = "High signal (AIC penalty)", xlab = "Clusters", ylab = "loglik - 2*nparams")
-#abline(v = 4, col = "red", lwd = 2)
+#plot(bic, type = "l", main = "High signal (BIC penalty)", xlab = "Clusters", ylab = "2.loglik - nparams.log(N)")
 K_bic = c(K_bic, which.max(bic))
 K_aic = c(K_aic, which.max(aic))
 
 K_hat = which.max(bic)
 GG_bic  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
-ami_bic = c(ami_bic, f_rez(GG_bic$classification, group)$ami)
+ami_bic = c(ami_bic, Mutual_Information(GG_bic$classification, group)$ami)
 K_hat = which.max(aic)
 GG_aic  = Mclust(GG_new, modelNames = "VVI", G = K_hat , verbose = F)
-ami_aic = c(ami_aic, f_rez(GG_aic$classification, group)$ami)
+ami_aic = c(ami_aic, Mutual_Information(GG_aic$classification, group)$ami)
 
 
 }
 
+save(K_bic, K_aic, K_hs1, K_hs2, ami_bic, ami_aic, ami_hs1, ami_hs2, file = "HL(unbalanced).RData")
 
-boxplot(K_bic, K_aic, K_hs, names = c("BIC", "AIC", "HS"), main = "High signal - Low noise (unbalanced) ", 
-        col = c("orange", "yellow", "gray"), ylab = "Estimated number of clusters")
-boxplot(ami_bic, ami_aic, ami_hs, names = c("BIC", "AIC", "HS"), main = "High signal - Low noise (unbalanced) ", 
-        col = c("orange", "yellow", "gray"), ylab = "Adjusted Mutual Index")
+
+
+boxplot(K_bic, K_aic, K_hs1, K_hs2, names = c("BIC", "AIC", "HS", "HS-log"), main = "High signal - Low noise (unbalanced) ", 
+        col = c("orange", "yellow", "gray", "cyan"), ylab = "Estimated number of clusters")
+boxplot(ami_bic, ami_aic, ami_hs1,ami_hs2, names = c("BIC", "AIC", "HS", "HS-log"), main = "High signal - Low noise (unbalanced) ", 
+        col = c("orange", "yellow", "gray", "cyan"), ylab = "Adjusted Mutual Index")
 
 
 median(K_hs)
