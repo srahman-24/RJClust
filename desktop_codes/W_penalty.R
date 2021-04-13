@@ -87,7 +87,7 @@ K_hs1    = c(K_hs1, which.min(W))
 library(ggplot2)
 
 pic = ggplot(data = NULL, aes(x = 1:9, y = W1, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
-  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K+1} | \\widehat{\\Lambda}_{K})')) + 
+  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K} | \\widehat{\\Lambda}_{K+1})')) + 
   ggtitle("Hockey stick criterion")  + theme_minimal()
 pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
   plot.title   = element_text(color = "black", size = 14, face="bold"),
@@ -101,8 +101,8 @@ pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
    )  
 
 pic = ggplot(data = NULL, aes(x = 1:9, y = W, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
-  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K+1} | \\widehat{\\Lambda}_{K}) + (K+1)N\\frac{1}{P}$')) + 
-  ggtitle(TeX('Hockey stick penalty $l(P) = 1$'))  + theme_minimal()
+  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K} | \\widehat{\\Lambda}_{K+1}) +  KN\\frac{1}{P}$')) + 
+  ggtitle("Hockey stick penalty l(P) = 1")  + theme_minimal()
 pic
 pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
   plot.title   = element_text(color = "black", size = 14, face="bold"),
