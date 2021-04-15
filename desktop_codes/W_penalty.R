@@ -87,12 +87,12 @@ K_hs1    = c(K_hs1, which.min(W))
 library(ggplot2)
 
 pic = ggplot(data = NULL, aes(x = 1:9, y = W1, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
-  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K} | \\widehat{\\Lambda}_{K+1})')) + 
+  xlab('Number of Clusters (K)') + ylab(TeX('$\\widehat{V}_K$')) + 
   ggtitle("Hockey stick criterion")  + theme_minimal()
 pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
-  plot.title   = element_text(color = "black", size = 14, face="bold"),
-  axis.title.x = element_text(color = "black", size = 12, face="bold"),
-  axis.title.y = element_text(color = "black", size = 14, face="bold"), 
+  plot.title   = element_text(color = "black", size = 20, face="bold"),
+  axis.title.x = element_text(color = "black", size = 18, face="bold"),
+  axis.title.y = element_text(color = "black", size = 25, face="bold"), 
   axis.text.x  = element_text(face  = "bold",  size = 12),
   axis.text.y  = element_text(face  = "bold",  size = 12), 
   axis.line    = element_line(colour = "darkblue", size = 1, linetype = "solid"),
@@ -101,13 +101,13 @@ pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
    )  
 
 pic = ggplot(data = NULL, aes(x = 1:9, y = W, size = 3)) + geom_point(shape = 2, col = "blue", size = 3, alpha = 0.9) + 
-  xlab("Number of Clusters (K)") + ylab(TeX('$V(\\widehat{\\Lambda}_{K} | \\widehat{\\Lambda}_{K+1}) +  KN\\frac{1}{P}$')) + 
-  ggtitle("Hockey stick penalty l(P) = 1")  + theme_minimal()
+  xlab("Number of Clusters (K)") + ylab(TeX('$\\widehat{H}_K$')) + 
+  ggtitle("Hockey Stick Penalty with l(P) = 1")  + theme_minimal()
 pic
 pic + scale_x_continuous(breaks = seq(1, 9, 1)) + theme(
-  plot.title   = element_text(color = "black", size = 14, face="bold"),
-  axis.title.x = element_text(color = "black", size = 12, face="bold"),
-  axis.title.y = element_text(color = "black", size = 14, face="bold"), 
+  plot.title   = element_text(color = "black", size = 20, face="bold"),
+  axis.title.x = element_text(color = "black", size = 18, face="bold"),
+  axis.title.y = element_text(color = "black", size = 25, face="bold"), 
   axis.text.x  = element_text(face  = "bold",  size = 12),
   axis.text.y  = element_text(face  = "bold",  size = 12), 
   axis.line    = element_line(colour = "darkblue", size = 1, linetype = "solid"),
