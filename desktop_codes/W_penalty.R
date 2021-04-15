@@ -1,3 +1,6 @@
+rm(list=ls(all=TRUE)) 
+
+
 library(mclust)
 library(RJcluster)
 library(latex2exp)
