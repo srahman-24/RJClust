@@ -7,9 +7,14 @@ library(latex2exp)
 
 K_bic = K_aic = K_hs1 = K_hs2 = NULL 
 ami_bic = ami_aic = ami_hs1 = ami_hs2 = NULL 
+
+set.seed(44)
+Seeds = sample(0:10000, 100, replace = FALSE)
+
 for (ii in 1:100)
 {
 # New Penalty
+set.seed(Seeds[ii])  
 n      = c(20,20,20,20)         # Unequal Cluster size settings
 p      = 220                    # first 4 being informative and remaining ones are non-informative 
 C      = 4                      # initializing every individual as their own clusters 
@@ -17,10 +22,10 @@ sigma1 = 1                      # noise level in informative variables
 sigma2 = 1                      # noise level in uninformative variables
 ## sigma = 1 ( SNR : high signal)
 ## sigma = 2 ( SNR:  low  signal) 
-group = c(rep(1,n[1]), rep(2,n[2]), rep(3,n[3]), rep(4,n[4]))
-# Set1:  sigma = 1 ( SNR : high level) , and n      = c(20,20,20,20) 
-# Set2:  sigma = 2 ( SNR : low level) ,  and n      = c(20,20,20,20) 
-# Set1:  sigma = 1 ( SNR : high level) , and n      = c(20,20,200,200) (unbalanced)
+group = c(rep(1, n[1]), rep(2, n[2]), rep(3, n[3]), rep(4, n[4]))
+# Set1:  sigma = 1 ( SNR : high level) , and n  = c(20,20,20,20) 
+# Set2:  sigma = 2 ( SNR : low level) ,  and n  = c(20,20,20,20) 
+# Set1:  sigma = 1 ( SNR : high level) , and n  = c(20,20,200,200) (unbalanced)
 
 X    = matrix(rnorm(sum(n)*p,0, sigma2), nrow = sum(n), ncol = p, byrow = TRUE)
 
@@ -40,6 +45,9 @@ X[(n[1] + n[2] + 1):(n[1] + n[2] + n[3]),(1 + 10):(10 + 10)] =   rnorm(n[3]*10, 
 #Cluster 4: N(-2.5,sigma)(1-10), N(-1.5, sigma)(11-20)
 X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),1:10]                  =   rnorm(n[4]*10, -2.5, sigma1)
 X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),(1 + 10):(10 + 10)]    =   rnorm(n[4]*10, -1.5, sigma1)
+
+
+}
 
 
 mu1 = as.matrix(c(rep(2.5, 10), rep(1.5, 10), rep(0, 200)))
