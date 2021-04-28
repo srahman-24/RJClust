@@ -10,11 +10,11 @@ Spec_func = function(X)
 
 ### 2016 TCGA Data. 
 
-dim(brain[[1]])
+dim(brain[[1]]) # RNA seq data
 
-dim(brain[[2]])
+dim(brain[[2]]) #miRNA seq data
 
-dim(brain[[3]])
+dim(brain[[3]]) # protein array data
 
 
 boxplot(brain[[1]][1:10 ,])
