@@ -2,16 +2,47 @@ library(mclust)
 library(RJcluster)
 library(clustvarsel)
 
-### parallel 
+### parallel
+library(parallel)
+library(MASS)
 
+### lapply()  and mclapply()  detectCores(), 
 
-for( sigma1 in c(1,2))
-{
-  for( sigma2 in c(1,2))
-  {
-    run the following.......
-  }
+fx       = function(nstart) kmeans(Boston, 4, nstart = nstart)
+starts   = rep(100, 40)
+numCores = detectCores()
+numCores
+
+system.time({
+  results = lapply(starts, fx)}
+)
+
+system.time({
+  results <- mclapply(starts, fx, mc.cores = numCores)
+})
+
+x       =  iris[which(iris[,5] != "setosa"), c(1,5)]
+res     =  NULL
+trials  = seq(1, 10000)
+boot_fx = function(trial) {
+  ind     = sample(100, 100, replace=TRUE)
+  result1 = glm(x[ind,2]~x[ind,1], family = binomial(logit))
+      r  = coefficients(result1)
+     res = cbind(res, r)
 }
+
+system.time({
+  results <- lapply(trials, boot_fx)
+})
+
+system.time({
+  results <- mclapply(trials, boot_fx, mc.cores = numCores)
+})
+
+
+##### foreach()
+##### doParallel()
+
 
 set.seed(44)
 Seeds = sample(0:10000, 100, replace = FALSE)
