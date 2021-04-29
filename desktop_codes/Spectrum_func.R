@@ -1,6 +1,7 @@
 library(Spectrum)
 library(RJcluster)
 
+### write email to the maintainer or author. 
 
 Spec_func = function(X)
 {
@@ -18,3 +19,6 @@ dim(brain[[3]]) # protein array data
 
 
 boxplot(brain[[1]][1:10 ,])
+
+
+brain[[1]]$TCGA.HT.7855
