@@ -19,6 +19,16 @@ cl     = km.out$cluster
 Mutual_Information(cl, group)$ami
 
 
+km_fx  = function(X, K){
+  
+  km.out = kmeans(X, centers = K, iter.max = 1000)
+  cl     = km.out$cluster
+  return(cl)
+}
+
+
+
+
 sparcl_fx = function(X, k){
 library(sparcl)
 km.out  = KMeansSparseCluster.permute(X, K = k, nperms = 25, wbounds = seq(1.1,10, by = 0.5),
