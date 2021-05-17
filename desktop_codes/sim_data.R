@@ -1,6 +1,6 @@
-sim_data = function(n,p,sigma1, sigma2){
+sim_data = function(n,p,sigma1, sigma2, seed){
 
-
+  set.seed(seed)
   group = c(rep(1, n[1]), rep(2, n[2]), rep(3, n[3]), rep(4, n[4]))
   # Set1:  sigma = 1 ( SNR : high level) , and n  = c(20,20,20,20) 
   # Set2:  sigma = 2 ( SNR : low level) ,  and n  = c(20,20,20,20) 
