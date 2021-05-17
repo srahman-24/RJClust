@@ -25,7 +25,7 @@ sim_data = function(n,p,sigma1, sigma2){
   X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),1:10]                  =   rnorm(n[4]*10, -2.5, sigma1)
   X[(n[1] + n[2] + n[3] + 1):(n[1] + n[2] + n[3] + n[4]),(1 + 10):(10 + 10)]    =   rnorm(n[4]*10, -1.5, sigma1)
 
-  return(X)
+  return(list(X = X, group = group))
     
 }
 
