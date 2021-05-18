@@ -9,6 +9,10 @@
 
 library(RJcluster)
 
+sim   = sim_data(c(20,20,20,20), 220, 1,1,1)
+X     = sim$X 
+group = sim$group
+
 
 km_fx  = function(X, K){
   
@@ -17,7 +21,7 @@ km_fx  = function(X, K){
      return(cl)
 }
 
-Mutual_Information(cl, group)$ami
+#Mutual_Information(cl, group)$ami
 
 
 sparcl_fx = function(X, k){
@@ -30,7 +34,7 @@ cl      = skmeans[[1]]$Cs
 return(cl)
 }
 
-Mutual_Information(cl, group)$ami
+#Mutual_Information(cl, group)$ami
 
 
 SSC_fx = function(X, K){
@@ -39,7 +43,7 @@ library(T4cluster)
     return(cl)
 }
 
-Mutual_Information(cl, group)$ami
+#Mutual_Information(cl, group)$ami
 
 
 #system.time({cl = MSM(X, k = 4)$cluster})
@@ -53,7 +57,7 @@ Spec_fx = function(X)
   return(res)
 }
 
-Mutual_Information(res$assignments, group)$ami
+#Mutual_Information(res$assignments, group)$ami
 
 
 sec_fx = function(X, K){
@@ -73,7 +77,7 @@ library(HDclassif)
 
 }
 
-Mutual_Information(cl$class, group)$ami
+#Mutual_Information(cl$class, group)$ami
 
 
 
@@ -84,7 +88,7 @@ Raftery_fx = function(X){
   return(cl)
 }
 
-Mutual_Information(cl$class, group)$ami
+#Mutual_Information(cl$class, group)$ami
 
 
 
