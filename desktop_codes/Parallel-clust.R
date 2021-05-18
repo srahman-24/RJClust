@@ -21,23 +21,25 @@ foreach(i = 1:10, .combine = rbind) %dopar% {
 }
 })
 
-foreach(i = 1:10, .combine = rbind) %dopar% {
+res = foreach(i = 1:5, .combine = rbind) %dopar% {
   
 sim   = sim_data(c(20,20,20,20), 220, 1,2, Seeds[i])
 X     = sim$X 
 group = sim$group
 
-cl    = sparcl_fx(X, 4)
-Mutual_Information(cl, group)$ami
-
-cl    = Raftery_fx(X)
-Mutual_Information(cl$class, group)$ami
-cl$G
-
-cl    = HDDC_fx(X)
-Mutual_Information(cl$class, group)$ami
-cl$K
+cl1    = km_fx(X, 4)
+cl2    = sparcl_fx(X, 4)
+c(Mutual_Information(cl1, group)$ami, Mutual_Information(cl2, group)$ami)
 
 }
 
+
+
+#cl    = Raftery_fx(X)
+#Mutual_Information(cl$class, group)$ami
+#cl$G
+
+#cl    = HDDC_fx(X)
+#Mutual_Information(cl$class, group)$ami
+#cl$K
 
