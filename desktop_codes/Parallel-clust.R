@@ -52,7 +52,7 @@ sim_data = function(n,p,sigma1, sigma2, seed){
 
 Raftery_fx = function(X){
   cl        =  clustvarsel(X, search = 'headlong', direction = 'forward', parallel = T ,
-                           emModels1 = "E", emModels2 = mclust.options("VVI"), itermax = 10, allow.EEE = F)
+                           emModels1 = "E", emModels2 = mclust.options("VVI"), itermax = 40, allow.EEE = F)
   return(cl)
 } 
 
@@ -62,9 +62,9 @@ set.seed(44)
 Seeds = sample(0:10000, 100, replace = FALSE)
 
 
-res = foreach(i = 1:2, .combine = rbind) %dopar% {
+res = foreach(i = 51:100, .combine = rbind) %dopar% {
   
-  sim   = sim_data(c(20,20,20,20), 220, 1,1, Seeds[i])
+  sim   = sim_data(c(20,20,20,20), 220, 1,2, Seeds[i])
   X     = sim$X 
   group = sim$group
   
@@ -74,7 +74,7 @@ res = foreach(i = 1:2, .combine = rbind) %dopar% {
 }
 
 
-save(res, file = "cvarsl_high_low.RData")
+save(res, file = "cvarsl_high_high2.RData")
 
 
 
