@@ -52,7 +52,7 @@ sim_data = function(n,p,sigma1, sigma2, seed){
 
 Raftery_fx = function(X){
   cl        =  clustvarsel(X, search = 'headlong', direction = 'forward', parallel = T ,
-                           emModels1 = "E", emModels2 = mclust.options("VVI"), itermax = 40, allow.EEE = F)
+                           emModels1 = "E", emModels2 = mclust.options("VVI"), itermax = 10, allow.EEE = F)
   return(cl)
 } 
 
@@ -69,7 +69,7 @@ res = foreach(i = 1:2, .combine = rbind) %dopar% {
   group = sim$group
   
   cl    = Raftery_fx(X)
-  c(Mutual_Information(cl$class, group)$ami, cl$G )
+  c(Mutual_Information(cl$model$class, group)$ami, cl$model$G )
   
 }
 
