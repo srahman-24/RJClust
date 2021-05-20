@@ -3,6 +3,7 @@ rm(list=ls(all=TRUE))
 library(mclust)
 library(RJcluster)
 library(clustvarsel)
+library(Spectrum)
 
 ### parallel
 library(foreach)
@@ -57,6 +58,14 @@ Raftery_fx = function(X){
 } 
 
 
+Spec_fx = function(X)
+{ 
+  data = as.data.frame(t(X))
+  cl = Spectrum(data)
+  return(cl)
+}
+
+
 ##### main function
 set.seed(44)
 Seeds = sample(0:10000, 100, replace = FALSE)
@@ -70,6 +79,9 @@ res = foreach(i = 51:100, .combine = rbind) %dopar% {
   
   cl    = Raftery_fx(X)
   c(Mutual_Information(cl$model$class, group)$ami, cl$model$G )
+  
+  cl    = Spec_fx(X)
+  c(Mutual_Information(cl$assignments, group)$ami, cl$K )
   
 }
 
@@ -95,5 +107,7 @@ sd(res[,2])
 res[which(res[,1] == "NaN")] = 0
 median(res[,1])
 sd(res[,1])
+
+
 
 
