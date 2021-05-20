@@ -48,12 +48,14 @@ library(T4cluster)
 
 #system.time({cl = MSM(X, k = 4)$cluster})
 #Mutual_Information(cl, group)$ami
+install.packages("Rfast")
+library(Rfast)
 
- 
+library(Spectrum)
 Spec_fx = function(X)
 { 
-  library(Spectrum)
-  res = Spectrum(t(X))
+  data = as.data.frame(t(X))
+  res = Spectrum(data)
   return(res)
 }
 
