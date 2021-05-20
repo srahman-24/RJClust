@@ -76,5 +76,24 @@ res = foreach(i = 51:100, .combine = rbind) %dopar% {
 
 save(res, file = "cvarsl_high_high2.RData")
 
+load("cvarsl_high_low1.RData")
+load("cvarsl_high_low2.RData")
+load("cvarsl_low_high1.RData")
+load("cvarsl_low_high2.RData")
+
+
+median(res[,2])
+sd(res[,2])
+median(res[,1])
+sd(res[,1])
+
+res1 = res
+res2 = res
+res = rbind(res1, res2)
+median(res[,2])
+sd(res[,2])
+res[which(res[,1] == "NaN")] = 0
+median(res[,1])
+sd(res[,1])
 
 
