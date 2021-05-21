@@ -4,6 +4,7 @@ library(mclust)
 library(RJcluster)
 library(clustvarsel)
 library(Spectrum)
+library(HDclassif)
 
 ### parallel
 library(foreach)
@@ -65,6 +66,13 @@ Spec_fx = function(X)
   return(cl)
 }
 
+HDDC_fx = function(X){
+  
+  hd.out = hddc(X, K = 1:10, model = "ALL", init = "kmeans", threshold = 0.2, criterion = "bic", itermax = 1000, eps = 0.001, algo = "EM")
+  return(hd.out)
+  
+}
+
 
 ##### main function
 set.seed(44)
@@ -83,6 +91,10 @@ res = foreach(i = 51:100, .combine = rbind) %dopar% {
   cl    = Spec_fx(X)
   c(Mutual_Information(cl$assignments, group)$ami, cl$K )
   
+  cl    = HDDC_fx(X)
+  c(Mutual_Information(cl$class, group)$ami, cl$K )
+  
+  
 }
 
 
@@ -99,6 +111,9 @@ sd(res[,2])
 median(res[,1])
 sd(res[,1])
 
+load("cvarsl_high_low_unbal1.RData")
+load("cvarsl_high_low_unbal2.RData")
+
 res1 = res
 res2 = res
 res = rbind(res1, res2)
@@ -108,6 +123,15 @@ res[which(res[,1] == "NaN")] = 0
 median(res[,1])
 sd(res[,1])
 
+load("spec_high_low_unbal.RData")
+median(res[,2])
+sd(res[,2])
+median(res[,1])
+sd(res[,1])
 
 
-
+load("cvarsl_high_low_unbal1.RData")
+median(res[,2])
+sd(res[,2])
+median(res[,1])
+sd(res[,1])

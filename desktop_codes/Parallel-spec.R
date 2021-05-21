@@ -64,7 +64,7 @@ Seeds = sample(0:10000, 100, replace = FALSE)
 
 res = foreach(i = 1:100, .combine = rbind) %dopar% {
   
-  sim   = sim_data(c(20,20,20,20), 220, 1,1, Seeds[i])
+  sim   = sim_data(c(20,20,20,20), 220, 2,1, Seeds[i])
   X     = sim$X 
   group = sim$group
   
@@ -74,4 +74,4 @@ res = foreach(i = 1:100, .combine = rbind) %dopar% {
 }
 
 
-save(res, file = "spec_high_low.RData")
+save(res, file = "spec_low_low.RData")
