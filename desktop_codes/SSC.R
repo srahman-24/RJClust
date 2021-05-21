@@ -6,6 +6,7 @@
 ### 4. Spectrum 
 ### 5. HDDC 
 ### 6. clustvarsel 
+### 7. Affinity Propagation
 
 library(RJcluster)
 
@@ -48,8 +49,7 @@ library(T4cluster)
 
 #system.time({cl = MSM(X, k = 4)$cluster})
 #Mutual_Information(cl, group)$ami
-install.packages("Rfast")
-library(Rfast)
+
 
 library(Spectrum)
 Spec_fx = function(X)
@@ -70,14 +70,7 @@ sec_fx = function(X, K){
 
 
 
-HDDC_fx = function(X){
 
-library(HDclassif)
-
-  hd.out = hddc(X, K = 1:10, model = "ALL", init = "kmeans", threshold = 0.2, criterion = "bic", itermax = 1000, eps = 0.001, algo = "EM")
-  return(hd.out)
-
-}
 
 #Mutual_Information(cl$class, group)$ami
 
@@ -91,6 +84,26 @@ Raftery_fx = function(X){
 }
 
 #Mutual_Information(cl$class, group)$ami
+
+library(apcluster)
+ap_fx  = function(X){
+  
+  cl = apcluster(negDistMat(r = 2), X)
+  class = rep(0,nrow(X))
+  for (ii in 1:length(cl@clusters))
+  {
+    class[cl@clusters[[ii]]] = ii
+  }
+  
+  c(Mutual_Information(class, group)$ami , length(cl@clusters))
+  
+}
+
+
+library(cluster)
+cl = clusGap(X, FUN = pam, K.max = 10, B = nrow(X), d.power = 2)
+cl = pam(X, k = 3 )$clustering
+
 
 
 
