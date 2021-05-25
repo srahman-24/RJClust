@@ -135,3 +135,16 @@ median(res[,2])
 sd(res[,2])
 median(res[,1])
 sd(res[,1])
+
+
+load("gap_low_high.RData")
+median(res[,2])
+sd(res[,2])
+res[which(res[,1] == "NaN")] = 0
+median(res[,1])
+sd(res[,1])
+
+
+
+
+

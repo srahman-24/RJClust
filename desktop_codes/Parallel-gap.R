@@ -75,6 +75,12 @@ gap_fx = function(X){
 set.seed(44)
 Seeds = sample(0:10000, 100, replace = FALSE)
 
+for (id in 1:100)
+{
+sim   = sim_data(c(20,20,200,200), 220, 1,1, Seeds[id])
+write.csv(sim$X, paste0("sim", id, ".csv")) 
+}
+
 
 res = foreach(i = 1:100, .combine = rbind) %dopar% {
   
