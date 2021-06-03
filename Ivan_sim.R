@@ -1,14 +1,26 @@
+library(mclust)
+library(RJcluster)
 
 file.choose()
-data = read.table("/Users/srahman/Downloads/samples300.txt")
+data = read.table("/Users/srahman/Downloads/samples50.txt")
 dim(data)
 n = nrow(data)
 p = ncol(data)
-boxplot(log(data[, 1:100]+1))
-X = as.matrix(data) 
-
-X = as.matrix(log(data +1))
+boxplot(log(data[, 1:10] + 1))
+X = as.matrix(log(data + 1))
 X = scale(X, center = T, scale = T)
+boxplot(X[,1:10])
+
+##### Ignore RJclust for n = 50, we will update the technical glitch ########
+res = RJclust(X, penalty = "mclust", seed = 2)
+res$class
+table(res$class, true_labels = c(rep(0,25), rep(1,25)))
+
+##### Implement the following if RJclust dont work ######
+#### install.packages("mclust") 
+
+library(mclust)
+
 p           =  ncol(X)
 N           =  nrow(X)
 GG          =  tcrossprod(X, X)/p
@@ -18,7 +30,7 @@ GG_new      =  cbind(gg_wodiag + diag(colSums(gg_wodiag)/(N-1)), diag(GG))
 BIC_GG      =  Mclust(GG_new, modelNames = "VVI")
 BIC_GG$G
 plot(BIC_GG$BIC)
-table(BIC_GG$classification, true_labels = c(rep(0,150), rep(1,150)))
-#table(BIC_GG$classification, group)
-#f_rez(BIC_GG$classification, group)
-#plot(BIC_GG$BIC)
+table(BIC_GG$classification, true_labels = c(rep(0,25), rep(1,25)))
+
+
+blah blah 
