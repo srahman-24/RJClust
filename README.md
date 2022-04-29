@@ -1,18 +1,18 @@
-# RJClust
+# GMac 
 Maintained by: Shahina Rahman.
 
-Authors of the main manuscript: Shahina Rahman and Valen E. Johnson
+Authors of the main manuscript: Shahina Rahman, Valen E. Johnson and Suhasini Subba Rao
 
-To use the RJ clustering, the following steps are needed. 
+To use the GMac clustering, the following steps are needed. 
 
 1. All the .R  and .cpp files and .csv file should be downloaded in the same folder RJ. 
-2. Set the current folder as the working directory.  Example: setwd("~/Documents/Clustering/RJ")
+2. Set the current folder as the working directory.  Example: setwd("~/Documents/Clustering/GMac")
 3. Install 2 external packages "mclust" and "infotheo" by the commands: 
            
            install.packages("mclust")
            install.packages("infotheo")
            
-4. Run the main_RJ.R file. 
+4. Run the main_GMac.R file. 
 
 
 
